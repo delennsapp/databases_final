@@ -37,9 +37,7 @@ void addField(Document *d, char *k, char *v)
     }
     else
     {
-        char *key = k;
-        char *value = v;
-        addKVF(d->fields, key, value);
+        addKVF(d->fields, strdup(k), strdup(v));
     }
     return;
 }

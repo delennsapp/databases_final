@@ -19,6 +19,7 @@ void parseDocFile(FILE *fp, Collection *c)
     {
         Document * d = createDocument(line);
         addDocument(c, d);
+        free(line);
         line = readLine(fp);
     }
     free(line);
