@@ -26,7 +26,18 @@ Collection *newCollection(char *n)
     return c;
 }
 
-void addDoc(Collection *c, Document *d)
+void addDocument(Collection *c, Document *d)
 {
     addListNode(c->documents, d);
+}
+
+void showDocuments(Collection *c)
+{
+    Document *current = iterateList(c->documents);
+    while(current != NULL)
+    {
+        showDocument(current);
+        current = iterateList(c->documents);
+    }
+    return;
 }

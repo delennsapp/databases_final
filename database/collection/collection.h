@@ -6,6 +6,7 @@
 typedef struct collection Collection;
 
 Collection *newCollection(char *);
-void addDoc(Collection *, Document *);
+void addDocument(Collection *, Document *);
+void showDocuments(Collection *);
 
 #endif

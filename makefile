@@ -7,7 +7,7 @@ final.o: final.c io/file/file.h database/document/document.h database/collection
 file.o: io/file/file.c io/file/file.h io/utilities/utilities.h
 	gcc -Wall -g -c io/file/file.c
 
-document.o: database/document/document.c database/document/document.h dictionary/dictionary.h scanner/scanner.h database/collection/collection.h
+document.o: database/document/document.c database/document/document.h dictionary/dictionary.h scanner/scanner.h 
 	gcc -Wall -g -c database/document/document.c
 
 collection.o: database/collection/collection.c database/collection/collection.h database/document/document.h scanner/scanner.h list/doublylinked/doublylinked.h

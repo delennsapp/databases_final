@@ -33,6 +33,7 @@ Dictionary *newDictionary()
 
 void addKVF(Dictionary *d, char *k, void *v)
 {
+    char *va = v;
     printf("Adding K: %s V: %s\n", k, va);
     KVF *kvf = allocate(sizeof(KVF));
     kvf->key = k;
