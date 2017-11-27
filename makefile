@@ -32,4 +32,4 @@ utilities.o: io/utilities/utilities.c io/utilities/utilities.h
 	gcc -Wall -g -c io/utilities/utilities.c
 
 clean:
-	rm *.o
+	rm -f *.o final
