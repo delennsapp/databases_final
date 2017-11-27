@@ -1,58 +1,55 @@
 /*
-File: array.c
 Developer: Delenn Sapp
-Date: October 22, 2016
-Dynamically allocated array
+Date: 11/28/2017
+Dynamic dictionary
 */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "array.h"
-#include "../utilities/utilities.h"
+#include "dictionary.h"
+#include "../array/array.h"
+#include "../scanner/scanner.h"
 
 #define DEFAULT_SIZE 8 
 
-struct array
+struct dictionary 
 {
-    void **array;
-    int size;
-    int currentIndex;
+    Array *array;
 };
 
-Array *newArray()
+struct kvf
 {
-    Array *a = allocate(sizeof(Array));
-    a->array = allocate(sizeof(void *) * DEFAULT_SIZE);
-    a->size = DEFAULT_SIZE;
-    a->currentIndex = 0;
-    return a;
+    char *key;
+    void *value;
+};
+
+Dictionary *newDictionary()
+{
+    Dictionary *d = allocate(sizeof(Dictionary));
+    d->array = newArray();
+    return d;
 }
 
-void freeArray(Array *a)
+void addKVF(Dictionary *d, char *k, void *v)
 {
-    free(a->array);
-    free(a);
+    printf("Adding K: %s V: %s\n", k, va);
+    KVF *kvf = allocate(sizeof(KVF));
+    kvf->key = k;
+    kvf->value = va;
+    append(d->array, kvf);
+    return;
 }
 
-void append(Array *a, void *item)
+void displayDictionary(Dictionary *d)
 {
-    int index = a->currentIndex;
-    if(index == a->size)
+    Array *a = d->array;
+    int i;
+    for(i = 0; i < getArraySize(a); i++)
     {
-        a->size = a->size * 2; 
-        a->array = reallocate(a->array, sizeof(void *) * a->size);
+        KVF *kvf = getIndex(a, i);
+        char *v = kvf->value;
+        printf("Key: %s Value: %s\n", kvf->key, v);
     }
-    a->array[index] = item;
-    a->currentIndex += 1;
-}
-
-void *getIndex(Array *a, int index)
-{
-    return a->array[index];
-}
-
-int getArraySize(Array *a)
-{
-    return a->currentIndex;
+    return;
 }

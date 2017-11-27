@@ -9,7 +9,7 @@ Dynamically allocated array
 #include <stdio.h>
 
 #include "array.h"
-#include "../utilities/utilities.h"
+#include "../scanner/scanner.h"
 
 #define DEFAULT_SIZE 8 
 

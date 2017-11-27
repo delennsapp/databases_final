@@ -1,5 +1,14 @@
+/*
+Developer: Delenn Sapp
+Date: 11/27/2017
+Collection 
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "collection.h"
+#include "../document/document.h"
 #include "../../scanner/scanner.h"
 #include "../../list/doublylinked/doublylinked.h"
 
@@ -17,4 +26,7 @@ Collection *newCollection(char *n)
     return c;
 }
 
-
+void addDoc(Collection *c, Document *d)
+{
+    addListNode(c->documents, d);
+}
