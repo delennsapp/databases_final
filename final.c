@@ -14,11 +14,13 @@ Main file for databases final
 
 void parseDocFile(FILE *fp, Collection *c)
 {
+    int sysid = 0;
     char *line = readLine(fp);
     while(!feof(fp))
     {
-        Document * d = createDocument(line);
+        Document * d = createDocument(line, sysid);
         addDocument(c, d);
+        ++sysid;
         free(line);
         line = readLine(fp);
     }

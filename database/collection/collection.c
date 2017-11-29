@@ -26,8 +26,26 @@ Collection *newCollection(char *n)
     return c;
 }
 
+int getVersionNumber(List *docs, Document *d)
+{
+    int version = 1;
+    Document *current = iterateList(docs);
+    while(current != NULL)
+    {
+        if(getDocID(current) == getDocID(d)) 
+        {
+            setDocLatest(current, 0); 
+            ++version;
+        }
+        current = iterateList(docs);
+    }
+    return version;
+}
+
 void addDocument(Collection *c, Document *d)
 {
+    setDocVersion(d, getVersionNumber(c->documents, d));
+    setDocLatest(d, 1); 
     addListNode(c->documents, d);
 }
 
@@ -37,6 +55,7 @@ void showDocuments(Collection *c)
     while(current != NULL)
     {
         showDocument(current);
+        printf("\n");
         current = iterateList(c->documents);
     }
     return;

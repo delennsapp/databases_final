@@ -74,7 +74,7 @@ void removeListTail(List *list)
 
 void *iterateList(List *list)
 {
-    list->current = list->current != NULL ? getNodePrevious(list->current) : list->tail;
+    list->current = list->current != NULL ? getNodeNext(list->current) : list->head;
     return getNodeData(list->current);
 }
 

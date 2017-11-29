@@ -21,11 +21,34 @@ struct document
   Dictionary *fields;
 };
 
-Document *newDocument() 
+Document *newDocument(int sysid) 
 {
     Document *d = allocate(sizeof(Document));
+    d->sysID = sysid;
     d->fields = newDictionary();
     return d;
+}
+
+int getDocVersion(Document *d)
+{
+    return d->version;
+}
+
+int getDocID(Document *d)
+{
+    return d->DocID;
+}
+
+void setDocVersion(Document *d, int v)
+{
+    d->version = v;
+    return;
+}
+
+void setDocLatest(Document *d, int l)
+{
+    d->latest = l;
+    return;
 }
 
 void addField(Document *d, char *k, char *v)
@@ -45,12 +68,17 @@ void addField(Document *d, char *k, char *v)
 void showDocument(Document *d)
 {
     printf("DocID: %d\n", d->DocID);
+    printf("SysID: %d\n", d->sysID);
+    printf("Version: %d\n", d->version);
+    printf("Latest: ");
+    if(d->latest) printf("yes\n");
+    else printf("no\n");
     displayDictionary(d->fields);
 }
 
-Document *createDocument(char *l)
+Document *createDocument(char *l, int sysid)
 {
-    Document *d = newDocument();
+    Document *d = newDocument(sysid);
     char key[255];
     char value[255];
     char ch;
