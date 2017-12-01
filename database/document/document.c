@@ -39,6 +39,11 @@ int getDocID(Document *d)
     return d->DocID;
 }
 
+int getSysID(Document *d)
+{
+    return d->sysID;
+}
+
 void setDocVersion(Document *d, int v)
 {
     d->version = v;
@@ -49,6 +54,26 @@ void setDocLatest(Document *d, int l)
 {
     d->latest = l;
     return;
+}
+
+int isLatest(Document *d)
+{
+    return d->latest;
+}
+
+int hasField(Document *d, char *f)
+{
+    if(containsKey(d->fields, f))
+        return 1;
+    return 0;
+}
+
+int getFieldValue(Document *d, char *f)
+{
+    char *v = getValue(d->fields, f);
+    if(v != NULL)
+        return atoi(v);
+    return -1;
 }
 
 void addField(Document *d, char *k, char *v)
@@ -67,16 +92,14 @@ void addField(Document *d, char *k, char *v)
 
 void showDocument(Document *d)
 {
-    printf("DocID: %d\n", d->DocID);
-    printf("SysID: %d\n", d->sysID);
-    printf("Version: %d\n", d->version);
-    printf("Latest: ");
-    if(d->latest) printf("yes\n");
-    else printf("no\n");
+    printf("vn: %d ", d->version);
+    printf("sysid: %d ", d->sysID);
+    printf("DocID: %d ", d->DocID);
     displayDictionary(d->fields);
+    printf("\n");
 }
 
-Document *createDocument(char *l, int sysid)
+Document *createDocument(char *l, int sysid, int start)
 {
     Document *d = newDocument(sysid);
     char key[255];
@@ -85,8 +108,7 @@ Document *createDocument(char *l, int sysid)
     int i; 
     int j = 0;
     int onKey = 1;
-    int size = strlen(l);
-    for(i = 0; i<size; i++)
+    for(i = start; i<strlen(l); i++)
     {
         ch = l[i];
         if(ch == ':') {

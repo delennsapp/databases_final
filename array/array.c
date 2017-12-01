@@ -56,3 +56,8 @@ int getArraySize(Array *a)
 {
     return a->currentIndex;
 }
+
+void setArray(Array *a, int index, void *v)
+{
+    a->array[index] = v;
+}

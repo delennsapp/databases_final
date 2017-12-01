@@ -1,5 +1,5 @@
-final: final.o file.o document.o collection.o scanner.o array.o dictionary.o doublylinked.o node.o utilities.o
-	gcc -Wall -g final.o file.o document.o collection.o scanner.o array.o dictionary.o doublylinked.o node.o utilities.o -o final
+final: final.o file.o database.o document.o collection.o scanner.o array.o dictionary.o doublylinked.o node.o utilities.o
+	gcc -Wall -g final.o file.o database.o document.o collection.o scanner.o array.o dictionary.o doublylinked.o node.o utilities.o -o final
 
 final.o: final.c io/file/file.h database/document/document.h database/collection/collection.h
 	gcc -Wall -g -c final.c
@@ -7,10 +7,13 @@ final.o: final.c io/file/file.h database/document/document.h database/collection
 file.o: io/file/file.c io/file/file.h io/utilities/utilities.h
 	gcc -Wall -g -c io/file/file.c
 
+database.o: database/database.c database/database.h database/collection/collection.h database/document/document.h scanner/scanner.h list/doublylinked/doublylinked.h array/array.h
+	gcc -Wall -g -c database/database.c
+
 document.o: database/document/document.c database/document/document.h dictionary/dictionary.h scanner/scanner.h 
 	gcc -Wall -g -c database/document/document.c
 
-collection.o: database/collection/collection.c database/collection/collection.h database/document/document.h scanner/scanner.h list/doublylinked/doublylinked.h
+collection.o: database/collection/collection.c database/collection/collection.h database/document/document.h scanner/scanner.h list/doublylinked/doublylinked.h array/array.h
 	gcc -Wall -g -c database/collection/collection.c
 
 scanner.o: scanner/scanner.c scanner/scanner.h
