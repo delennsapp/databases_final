@@ -142,42 +142,6 @@ void sortByField(Array *a, char *f, int low, int high)
     }
 }
 
-int partitionByDocID(Array *a, int low, int high)
-{
-    Document *pivot = getIndex(a, high);
-    int i = (low - 1);
-    int j;
-    Document *l;
-    Document *r;
-
-    for(j = low; j < high; j++)
-    {
-        l = getIndex(a, j);
-        if(getDocID(pivot) > getDocID(l))
-        {
-            i++;
-            r = getIndex(a, i);
-            setArray(a, j, r);
-            setArray(a, i, l);
-        }
-    }
-    l = getIndex(a, i+1);
-    r = getIndex(a, high);
-    setArray(a,i+1, r);
-    setArray(a, high, l);
-    return (i + 1);
-}
-
-void sortByDocID(Array *a, int low, int high)
-{
-    if(low < high)
-    {
-        int p = partitionByDocID(a, low, high);
-        sortByDocID(a, low, p-1);
-        sortByDocID(a, p+1, high);
-    }
-}
-
 void sortByVersion(Array *a, int n)
 {
     int i, j;
@@ -296,7 +260,7 @@ void showFilteredResults(Array *a, Array *f)
     int j;
     char *ch;
     int hasFd = 0;
-    sortByDocID(a, 0, getArraySize(a) - 1);
+    sortByField(a,"DocID", 0, getArraySize(a) - 1);
     sortByVersion(a, getArraySize(a));
     for(i = 0; i < getArraySize(a); i++)
     {
@@ -305,7 +269,7 @@ void showFilteredResults(Array *a, Array *f)
         for(j = 0; j < getArraySize(f); j++)
         {
             char *ch = getIndex(f, j);
-            if(hasField(d, ch) || strcmp(ch, "DocID") == 0 || strcmp(ch, "sysid") == 0)
+            if(hasField(d, ch) || strcmp(ch, "sysid") == 0)
             {
                 hasFd = 1;
             }
@@ -322,11 +286,7 @@ void showFilteredResults(Array *a, Array *f)
             for(j = 0; j < getArraySize(f); j++)
             {
                 ch = getIndex(f, j);
-                if(strcmp(ch, "DocID") == 0)
-                {
-                    printf("DocID: %d ", getDocID(d));
-                }
-                else if(hasField(d, ch))
+                if(hasField(d, ch))
                     printf("%s: %d ", ch, getFieldValue(d, ch));
             }
         }
@@ -341,7 +301,7 @@ void showFilteredResults(Array *a, Array *f)
 void showResults(Array *a)
 {
     int i;
-    sortByDocID(a, 0, getArraySize(a) - 1);
+    sortByField(a,"DocID", 0, getArraySize(a) - 1);
     sortByVersion(a, getArraySize(a));
     for(i = 0; i < getArraySize(a); i++)
     {

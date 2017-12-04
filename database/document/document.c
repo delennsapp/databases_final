@@ -16,7 +16,6 @@ struct document
 {
   int version;
   int sysID;
-  int DocID;
   int latest;
   Dictionary *fields;
 };
@@ -36,7 +35,10 @@ int getDocVersion(Document *d)
 
 int getDocID(Document *d)
 {
-    return d->DocID;
+    char *v = getValue(d->fields, "DocID");
+    if(v != NULL)
+        return atoi(v);
+    return -1;
 }
 
 int getSysID(Document *d)
@@ -78,15 +80,7 @@ int getFieldValue(Document *d, char *f)
 
 void addField(Document *d, char *k, char *v)
 {
-    if(strcmp(k, "DocID") == 0)
-    {
-        int val = atoi(v);
-        d->DocID = val;
-    }
-    else
-    {
-        addKVF(d->fields, strdup(k), strdup(v));
-    }
+    addKVF(d->fields, strdup(k), strdup(v));
     return;
 }
 
@@ -94,7 +88,6 @@ void showDocument(Document *d)
 {
     printf("vn: %d ", d->version);
     printf("sysid: %d ", d->sysID);
-    printf("DocID: %d ", d->DocID);
     displayDictionary(d->fields);
     printf("\n");
 }
