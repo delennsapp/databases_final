@@ -263,7 +263,7 @@ readLine(FILE *fp)
     buffer = allocateMsg(size,"readLine");
 
     index = 0;
-    while (ch != '\n')
+    while (ch != '\n' && ch != '\r')
         {
         if (ch == EOF) break;
         if (index > size - 2)

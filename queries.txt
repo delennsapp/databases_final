@@ -1,4 +1,4 @@
-final.query([], [DocID], [])
+final.query([], [], [])
 final.query([Manager=555], [sysid, DocID, Dept])
 final.query([Age<30, Manager=555], [], [2])
 final.count([Manager])
