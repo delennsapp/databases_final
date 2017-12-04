@@ -95,170 +95,7 @@ Array *filterByNumberVersions(Collection *c, Array *a, int v)
     return new;
 }
 
-Array *getCondition(char *cond, int s)
-{
-    char c[255];
-    char str[255];
-    int i;
-    int j = 0;
-    char ch;
-    Array *a = newArray();
-    
-    for(i = s; i < strlen(cond); i++)
-    {
-        ch = cond[i];
-        if(ch == ' ') continue;
-        else if(ch == ',')
-        {
-            j++;
-            break;
-        }
-        else
-        {
-            c[j] = ch;
-            j++;
-        }
-    }
-    c[j] = '\0';
-    append(a, strdup(c));
-    sprintf(str, "%d\n", i + 1);
-    append(a, strdup(str));
-    return a;
-}
-
-Array *filterEquals(Array *a, char *f, int v)
-{
-    Array *new = newArray();
-    int i;
-    for(i = 0; i < getArraySize(a); i++)
-    {
-        Document *d = getIndex(a, i);
-        if(hasField(d, f))
-        {
-            int val = getFieldValue(d, f);
-            if(v == val)
-            {
-                append(new, d);
-            }
-        }
-    }
-    return new;
-}
-
-Array *filterLessThanEquals(Array *a, char *f, int v)
-{
-    Array *new = newArray();
-    int i;
-    for(i = 0; i < getArraySize(a); i++)
-    {
-        Document *d = getIndex(a, i);
-        if(hasField(d, f))
-        {
-            int val = getFieldValue(d, f);
-            if(val <= v)
-            {
-                append(new, d);
-            }
-        }
-    }
-    return new;
-}
-
-Array *filterLessThan(Array *a, char *f, int v)
-{
-    Array *new = newArray();
-    int i;
-    for(i = 0; i < getArraySize(a); i++)
-    {
-        Document *d = getIndex(a, i);
-        if(hasField(d, f))
-        {
-            int val = getFieldValue(d, f);
-            if(val < v)
-            {
-                append(new, d);
-            }
-        }
-    }
-    return new;
-}
-
-Array *filterGreaterThanEquals(Array *a, char *f, int v)
-{
-    Array *new = newArray();
-    int i;
-    for(i = 0; i < getArraySize(a); i++)
-    {
-        Document *d = getIndex(a, i);
-        if(hasField(d, f))
-        {
-            int val = getFieldValue(d, f);
-            if(val >= v)
-            {
-                append(new, d);
-            }
-        }
-    }
-    return new;
-}
-
-Array *filterGreaterThan(Array *a, char *f, int v)
-{
-    Array *new = newArray();
-    int i;
-    for(i = 0; i < getArraySize(a); i++)
-    {
-        Document *d = getIndex(a, i);
-        if(hasField(d, f))
-        {
-            int val = getFieldValue(d, f);
-            if(val > v)
-            {
-                append(new, d);
-            }
-        }
-    }
-    return new;
-}
-
-Array *filterNotEqual(Array *a, char *f, int v)
-{
-    Array *new = newArray();
-    int i;
-    for(i = 0; i < getArraySize(a); i++)
-    {
-        Document *d = getIndex(a, i);
-        if(hasField(d, f))
-        {
-            int val = getFieldValue(d, f);
-            if(v != val)
-            {
-                append(new, d);
-            }
-        }
-    }
-    return new;
-}
-
-Array *filterCond(Array *a, char *f, char *o, char *v)
-{
-    int val = atoi(v);
-    if(strcmp(o, "=") == 0)
-        a = filterEquals(a, f, val);
-    if(strcmp(o, ">=") == 0)
-        a = filterGreaterThanEquals(a, f, val);
-    if(strcmp(o, "<=") == 0)
-        a = filterLessThanEquals(a, f, val);
-    if(strcmp(o, "<") == 0)
-        a = filterLessThan(a, f, val);
-    if(strcmp(o, ">") == 0)
-        a = filterGreaterThan(a, f, val);
-    if(strcmp(o, "<>") == 0)
-        a = filterNotEqual(a, f, val);
-    return a;
-}
-
-Array *filterByCondition(Array *a, char *c)
+Array *parseCondition(char *c, char *s)
 {
     char field[255];
     char operation[255];
@@ -267,6 +104,7 @@ Array *filterByCondition(Array *a, char *c)
     int i;
     char ch;
     int j = 0;
+    Array *a = newArray();
 
     for(i = 0; i < strlen(c); i++)
     {
@@ -310,33 +148,138 @@ Array *filterByCondition(Array *a, char *c)
         }
     }
     value[j] = '\0';
-    
-    return filterCond(a, strdup(field), strdup(operation), strdup(value));
+    append(a, s);
+    append(a, strdup(field));
+    append(a, strdup(operation));
+    append(a, strdup(value));
+    return a;
 }
 
+Array *getCondition(char *cond, int s)
+{
+    char c[255];
+    char str[255];
+    int i;
+    int j = 0;
+    char ch;
+    
+    for(i = s; i < strlen(cond); i++)
+    {
+        ch = cond[i];
+        if(ch == ' ') continue;
+        else if(ch == ',')
+        {
+            j++;
+            break;
+        }
+        else
+        {
+            c[j] = ch;
+            j++;
+        }
+    }
+    c[j] = '\0';
+    sprintf(str, "%d", i+1);
+    return parseCondition(strdup(c), strdup(str));
+}
+
+int meetsCondition(Document *d, char *f, char *o, char *v)
+{
+    int val = atoi(v);
+    int vl;
+    if(hasField(d, f))
+    {
+       vl = getFieldValue(d, f);
+    }
+    else 
+        return 1;
+    if(strcmp(o, "=") == 0)
+        return (vl == val);
+    if(strcmp(o, ">=") == 0)
+        return (vl >= val);
+    if(strcmp(o, "<=") == 0)
+        return (vl <= val);
+    if(strcmp(o, "<") == 0)
+        return (vl < val);
+    if(strcmp(o, ">") == 0)
+        return (vl > val);
+    if(strcmp(o, "<>") == 0)
+        return (vl != val);
+    return 0;
+}
+
+int hasAnyField(Document *d, List *conditions)
+{
+    Array *current;
+    char *f;
+    int hasFd = 0;
+    
+    current = iterateList(conditions);
+    while(current != NULL)
+    {
+        f = getIndex(current, 1);
+        if(hasField(d, f))
+            hasFd = 1;
+        current = iterateList(conditions);
+    }
+    return hasFd;
+}
+
+Array *meetsConditions(Array *all, List *conds)
+{
+    Array *new = newArray();
+    int i;
+    int meetsAll = 1;
+    Array *current;
+    for(i = 0; i < getArraySize(all); i++)
+    {
+        Document *d = getIndex(all, i);
+        if(hasAnyField(d, conds))
+        {
+            current = iterateList(conds);
+            while(current != NULL) {
+                int mc = meetsCondition(d, getIndex(current, 1), getIndex(current, 2), getIndex(current, 3));
+                if(!mc)
+                    meetsAll = 0;
+                current = iterateList(conds);
+            }
+            if(meetsAll)
+            {
+                append(new, d);
+            }
+        }
+        meetsAll = 1;
+    }
+    return new;
+}
 
 Array *filterByConditions(Collection *c, char *conditions)
 {
     int moreConditions = 1;
     int s = 0;
     Array *a = newArray();
+    List *conds = newList();
     Document *current = iterateList(c->documents);
     while(current != NULL)
     {
         append(a, current);
         current = iterateList(c->documents);
     }
-    while(moreConditions)
+    if(strlen(conditions) == 0)
+        return a;
+    else 
     {
-        Array *cond = getCondition(conditions, s);
-        char *condition = getIndex(cond, 0);
-        a = filterByCondition(a, condition);
-        char *stopped = getIndex(cond, 1);
-        s = atoi(stopped);
-        if(strlen(conditions) <= s)
-            moreConditions = 0;
+        while(moreConditions)
+        {
+            Array *cond = getCondition(conditions, s);
+            addListNode(conds, cond);
+            char *stopped = getIndex(cond, 0);
+            s = atoi(stopped);
+            if(strlen(conditions) <= s)
+                moreConditions = 0;
+        }
+        return meetsConditions(a, conds);
     }
-    return a;
 }
 
 int getVersionNumber(List *docs, Document *d)

@@ -47,6 +47,21 @@ void addCollection(Database *d, Collection *c)
     addListNode(d->collections, c);
 }
 
+int hasCollection(Database *d, char *n)
+{
+    Collection *current = iterateList(d->collections);
+    int exists = 0;
+    while(current != NULL)
+    {
+        if(strcmp(getCollectionName(current), n) == 0)
+        {
+            exists = 1;
+        }
+        current = iterateList(d->collections);
+    }
+    return exists; 
+}
+
 Collection *getCollection(Database *d, char *n)
 {
     Collection *current = iterateList(d->collections);
@@ -260,8 +275,6 @@ void showFilteredResults(Array *a, Array *f)
     int j;
     char *ch;
     int hasFd = 0;
-    sortByField(a,"DocID", 0, getArraySize(a) - 1);
-    sortByVersion(a, getArraySize(a));
     for(i = 0; i < getArraySize(a); i++)
     {
         Document *d = getIndex(a, i);
@@ -294,21 +307,21 @@ void showFilteredResults(Array *a, Array *f)
             printf("\n");
         hasFd = 0;
     }
-    printf("\n");
+    if(getArraySize(a) > 0)
+        printf("\n");
     return;
 }
 
 void showResults(Array *a)
 {
     int i;
-    sortByField(a,"DocID", 0, getArraySize(a) - 1);
-    sortByVersion(a, getArraySize(a));
     for(i = 0; i < getArraySize(a); i++)
     {
         Document *d = getIndex(a, i);
         showDocument(d);
     }
-    printf("\n");
+    if(getArraySize(a) > 0)
+        printf("\n");
     return;
 }
 
@@ -362,6 +375,8 @@ void query(Collection *c, char *l, int s)
     stopped = getIndex(f, 1);
 
     a = filterVersions(a, c, l, atoi(stopped));
+    sortByField(a,"DocID", 0, getArraySize(a) - 1);
+    sortByVersion(a, getArraySize(a));
     if(strlen(fields) == 0)
         showResults(a);
     else
@@ -371,8 +386,12 @@ void query(Collection *c, char *l, int s)
 
 void determineQuery(Database *d, char *l, int s, char *c, char *q)
 {
+    Collection *coll;
     int size = strlen(l);
-    Collection *coll = getCollection(d, c);
+    if(hasCollection(d, c))
+        coll = getCollection(d, c);
+    else
+        return;
     if(l[size-1] == ')')
         l[size-1] = '\0';
     else

@@ -49,9 +49,7 @@ int main(void)
     Collection *c = newCollection("final", data);
     addCollection(db, c);
     parseDocFile(data, c, db);
-    showDocuments(c);
- //   parseQueryFile(query, db);
-//    showCollections(db);
+    parseQueryFile(query, db);
     fclose(data);
     fclose(query);
     return 0;

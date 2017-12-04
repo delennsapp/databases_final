@@ -80,7 +80,8 @@ int getFieldValue(Document *d, char *f)
 
 void addField(Document *d, char *k, char *v)
 {
-    addKVF(d->fields, strdup(k), strdup(v));
+    if(strlen(k) > 0)
+        addKVF(d->fields, strdup(k), strdup(v));
     return;
 }
 
