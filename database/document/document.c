@@ -93,6 +93,17 @@ void showDocument(Document *d)
     printf("\n");
 }
 
+void showDocumentWithFile(Document *d, FILE *results)
+{
+    printf("vn: %d ", d->version);
+    fprintf(results, "vn: %d ", d->version);
+    printf("sysid: %d ", d->sysID);
+    fprintf(results, "sysid: %d ", d->sysID);
+    displayDictionaryWithFile(d->fields, results);
+    printf("\n");
+    fprintf(results, "\n");
+}
+
 Document *createDocument(char *l, int sysid, int start)
 {
     Document *d = newDocument(sysid);

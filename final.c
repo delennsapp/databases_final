@@ -28,12 +28,12 @@ void parseDocFile(FILE *fp, Collection *c, Database *db)
     return;
 }
 
-void parseQueryFile(FILE *fp, Database *db)
+void parseQueryFile(FILE *fp, Database *db, FILE *results)
 {
     char *line = readLine(fp);
     while(!feof(fp))
     {
-        doQuery(db, line);
+        doQuery(db, line, results);
         free(line);
         line = readLine(fp);
     }
@@ -46,11 +46,13 @@ int main(void)
     Database *db = newDatabase("db");
     FILE *data = openFile("data.txt");
     FILE *query = openFile("queries.txt");
+    FILE *results = fopen("ldsapp.txt", "w");
     Collection *c = newCollection("final", data);
     addCollection(db, c);
     parseDocFile(data, c, db);
-    parseQueryFile(query, db);
+    parseQueryFile(query, db, results);
     fclose(data);
     fclose(query);
+    fclose(results);
     return 0;
 }

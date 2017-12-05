@@ -11,6 +11,6 @@ void incrementSysID(Database *d);
 void addCollection(Database *, Collection *);
 Collection *getCollection(Database *, char *);
 void showCollections(Database *); 
-void doQuery(Database *, char *);
+void doQuery(Database *, char *, FILE *);
 
 #endif

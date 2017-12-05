@@ -113,6 +113,20 @@ void displayDictionary(Dictionary *d)
     return;
 }
 
+void displayDictionaryWithFile(Dictionary *d, FILE *results)
+{
+    Array *a = d->array;
+    int i;
+    for(i = 0; i < getArraySize(a); i++)
+    {
+        KVF *kvf = getIndex(a, i);
+        char *v = kvf->value;
+        printf("%s: %s ", kvf->key, v);
+        fprintf(results, "%s: %s ", kvf->key, v);
+    }
+    return;
+}
+
 void addKVF(Dictionary *d, char *k, void *v)
 {
     KVF *kvf = allocate(sizeof(KVF));

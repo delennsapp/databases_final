@@ -63,34 +63,32 @@ Array *filterForLatest(Collection *c, Array *a)
     return new;
 }
 
-Array *filterByNumberVersions(Collection *c, Array *a, int v)
+int numberLatest(Document *d, Array *a, int n)
 {
+    int number = 1;
     int i;
-    int j;
     Document *d1;
-    Document *d2;
-    Array *new = newArray();
-    Array *latest = filterForLatest(c, a);
     for(i = 0; i < getArraySize(a); i++)
     {
         d1 = getIndex(a, i);
-        if(isLatest(d1))
-        {
-            append(new, d1);
-        }
-        else {
-            for(j = 0; j < getArraySize(latest); j++)
-            {
-                d2 = getIndex(latest, j);
-                if(getDocID(d1) == getDocID(d2))
-                {
-                    if(getDocVersion(d1) > (getDocVersion(d2) - v))
-                    {
-                        append(new, d1);
-                    }
-                }
-            }
-        }
+        if(d1 == d) continue;
+        else if((getDocID(d1) == getDocID(d)) && (getDocVersion(d1) > getDocVersion(d)))
+            number += 1;
+    }
+    if(number > n)
+        return 0;
+    else 
+        return 1;
+}
+
+Array *filterByNumberVersions(Collection *c, Array *a, int v)
+{
+    int i;
+    Array *new = newArray();
+    for(i = 0; i < getArraySize(a); i++)
+    {
+        if(numberLatest(getIndex(a, i), a, v))
+            append(new, getIndex(a, i));
     }
     return new;
 }

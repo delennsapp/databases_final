@@ -234,7 +234,7 @@ Array *filterVersions(Array *a, Collection *c, char *l, int s)
     char *versionSection = getVersionSection(l, s);
     if(strcmp(versionSection, "all") == 0);
     else if(strcmp(versionSection, "latest") == 0)
-        a = filterForLatest(c, a);
+        a = filterByNumberVersions(c, a, 1);
     else
         a = filterByNumberVersions(c, a, atoi(versionSection));
     return a;
@@ -269,7 +269,7 @@ Array *getFieldsArray(char *f)
     return new;
 }
 
-void showFilteredResults(Array *a, Array *f)
+void showFilteredResults(Array *a, Array *f, FILE *results)
 {
     int i;
     int j;
@@ -290,44 +290,61 @@ void showFilteredResults(Array *a, Array *f)
         if(hasFd == 1)
         {
             printf("vn: %d ", getDocVersion(d));
+            fprintf(results, "vn: %d ", getDocVersion(d));
             for(j = 0; j < getArraySize(f); j++)
             {
                 ch = getIndex(f, j);
-                if(strcmp(ch, "sysid") == 0)
+                if(strcmp(ch, "sysid") == 0) 
+                {
                     printf("sysid: %d ", getSysID(d));
+                    fprintf(results, "sysid: %d ", getSysID(d));
+                }
             }
             for(j = 0; j < getArraySize(f); j++)
             {
                 ch = getIndex(f, j);
                 if(hasField(d, ch))
+                {
                     printf("%s: %d ", ch, getFieldValue(d, ch));
+                    fprintf(results, "%s: %d ", ch, getFieldValue(d, ch));
+                }
             }
         }
         if(hasFd)
+        {
             printf("\n");
+            fprintf(results, "\n");
+        }
         hasFd = 0;
     }
     if(getArraySize(a) > 0)
+    {
         printf("\n");
+        fprintf(results, "\n");
+    }
     return;
 }
 
-void showResults(Array *a)
+void showResults(Array *a, FILE *results)
 {
     int i;
     for(i = 0; i < getArraySize(a); i++)
     {
         Document *d = getIndex(a, i);
-        showDocument(d);
+        showDocumentWithFile(d, results);
     }
     if(getArraySize(a) > 0)
+    {
         printf("\n");
+        fprintf(results, "\n");
+    }
     return;
 }
 
-void showCount(Array *a, char *f)
+void showCount(Array *a, char *f, FILE *results)
 {
     printf("count_%s: %d\n\n",f, getArraySize(a));
+    fprintf(results, "count_%s: %d\n\n",f, getArraySize(a));
     return; 
 }
 
@@ -339,7 +356,7 @@ void insert(Database *d, Collection *c, char *l, int stopped)
     return;
 }
 
-void sort(Collection *c, char *l, int s)
+void sort(Collection *c, char *l, int s, FILE *results)
 {
     Array *field = getValuesInBracket(l, s);
     char *f = getIndex(field, 0);
@@ -347,22 +364,22 @@ void sort(Collection *c, char *l, int s)
     Array *a = filterByField(c, f);
     a = filterVersions(a, c, l, atoi(stopped));
     sortByField(a, f, 0, getArraySize(a) - 1);
-    showResults(a);
+    showResults(a, results);
     return;
 }
 
-void count(Collection *c, char *l, int s)
+void count(Collection *c, char *l, int s, FILE *results)
 {
     Array *field = getValuesInBracket(l, s);
     char *f = getIndex(field, 0);
     char *stopped = getIndex(field, 1);
     Array *a = filterByField(c, f);
     a = filterVersions(a, c, l, atoi(stopped));
-    showCount(a, f);
+    showCount(a, f, results);
     return;
 }
 
-void query(Collection *c, char *l, int s)
+void query(Collection *c, char *l, int s, FILE *results)
 {
     Array *cond = getValuesInBracket(l, s); 
     char *conditions = getIndex(cond, 0);
@@ -378,13 +395,13 @@ void query(Collection *c, char *l, int s)
     sortByField(a,"DocID", 0, getArraySize(a) - 1);
     sortByVersion(a, getArraySize(a));
     if(strlen(fields) == 0)
-        showResults(a);
+        showResults(a, results);
     else
-        showFilteredResults(a, getFieldsArray(fields));
+        showFilteredResults(a, getFieldsArray(fields), results);
     return;
 }
 
-void determineQuery(Database *d, char *l, int s, char *c, char *q)
+void determineQuery(Database *d, char *l, int s, char *c, char *q, FILE *results)
 {
     Collection *coll;
     int size = strlen(l);
@@ -404,15 +421,15 @@ void determineQuery(Database *d, char *l, int s, char *c, char *q)
     }
     else if(strcmp(q, "sort") == 0)
     {
-        sort(coll, l, s);
+        sort(coll, l, s, results);
     }
     else if(strcmp(q, "count") == 0)
     {
-        count(coll, l, s);
+        count(coll, l, s, results);
     }
     else if(strcmp(q, "query") == 0)
     {
-        query(coll, l, s);
+        query(coll, l, s, results);
     }
     else printf("Error. %s not a recognized operation\n", q);
     return;
@@ -428,7 +445,7 @@ int skipWhitespace(char *l)
     return i;
 }
 
-void doQuery(Database *d, char *l)
+void doQuery(Database *d, char *l, FILE *results)
 {
     char coll[255];
     char query[255];
@@ -466,6 +483,6 @@ void doQuery(Database *d, char *l)
             ++j;
         }
     }
-    determineQuery(d, l, stopped, strdup(coll), strdup(query));
+    determineQuery(d, l, stopped, strdup(coll), strdup(query), results);
     return;
 }
