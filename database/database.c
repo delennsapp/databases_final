@@ -26,7 +26,7 @@ Database *newDatabase(char *n)
 {
     Database *d = allocate(sizeof(Database));
     d->name = n;
-    d->sysid = 0;
+    d->sysid = 1;
     d->collections = newList();
     return d; 
 }
@@ -381,19 +381,25 @@ void count(Collection *c, char *l, int s, FILE *results)
 
 void query(Collection *c, char *l, int s, FILE *results)
 {
-    Array *cond = getValuesInBracket(l, s); 
-    char *conditions = getIndex(cond, 0);
-    char *stopped = getIndex(cond, 1);
-    Array *a = filterByConditions(c, conditions);
+    Array *a;
+    char *fields = "";
+    if((strlen(l) - s) == 0)
+        a = filterByNumberVersions(c, buildArray(c), 1);
+    else {
+        Array *cond = getValuesInBracket(l, s); 
+        char *conditions = getIndex(cond, 0);
+        char *stopped = getIndex(cond, 1);
+        a = filterByConditions(c, conditions);
 
-    s = skipComma(l, atoi(stopped)); 
-    Array *f = getValuesInBracket(l, s);
-    char *fields = getIndex(f, 0);
-    stopped = getIndex(f, 1);
+        s = skipComma(l, atoi(stopped)); 
+        Array *f = getValuesInBracket(l, s);
+        fields = getIndex(f, 0);
+        stopped = getIndex(f, 1);
 
-    a = filterVersions(a, c, l, atoi(stopped));
-    sortByField(a,"DocID", 0, getArraySize(a) - 1);
-    sortByVersion(a, getArraySize(a));
+        a = filterVersions(a, c, l, atoi(stopped));
+        sortByField(a,"DocID", 0, getArraySize(a) - 1);
+        sortByVersion(a, getArraySize(a));
+    }
     if(strlen(fields) == 0)
         showResults(a, results);
     else

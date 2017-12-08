@@ -14,5 +14,6 @@ Array *filterByField(Collection *, char *);
 Array *filterForLatest(Collection *, Array *);
 Array *filterByNumberVersions(Collection *, Array *, int);
 Array *filterByConditions(Collection *, char *);
+Array *buildArray(Collection *);
 
 #endif

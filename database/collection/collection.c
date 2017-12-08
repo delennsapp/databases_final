@@ -251,18 +251,24 @@ Array *meetsConditions(Array *all, List *conds)
     return new;
 }
 
-Array *filterByConditions(Collection *c, char *conditions)
+Array *buildArray(Collection *c)
 {
-    int moreConditions = 1;
-    int s = 0;
     Array *a = newArray();
-    List *conds = newList();
     Document *current = iterateList(c->documents);
     while(current != NULL)
     {
         append(a, current);
         current = iterateList(c->documents);
     }
+    return a;
+}
+
+Array *filterByConditions(Collection *c, char *conditions)
+{
+    int moreConditions = 1;
+    int s = 0;
+    Array *a = buildArray(c);
+    List *conds = newList();
     if(strlen(conditions) == 0)
         return a;
     else 
