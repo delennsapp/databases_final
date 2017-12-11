@@ -1,14 +1,17 @@
+final.query([Dept=4], [sysid, DocID, Age])
 vn: 1 sysid: 8 DocID: 1 Age: 98 
 vn: 4 sysid: 19 DocID: 4 Age: 36 
 vn: 1 sysid: 4 DocID: 40 
 vn: 1 sysid: 32 DocID: 43 
 
+final.query([Dept=4], [sysid, DocID, Age], [2])
 vn: 1 sysid: 8 DocID: 1 Age: 98 
 vn: 4 sysid: 19 DocID: 4 Age: 36 
 vn: 3 sysid: 14 DocID: 4 Age: 35 
 vn: 1 sysid: 4 DocID: 40 
 vn: 1 sysid: 32 DocID: 43 
 
+final.query([Dept=4, Age>35], [DocID, Age])
 vn: 1 DocID: 1 Age: 98 
 vn: 4 DocID: 4 Age: 36 
 vn: 1 DocID: 7 Age: 77 
@@ -20,6 +23,7 @@ vn: 1 DocID: 555 Age: 76
 vn: 1 DocID: 620 Age: 78 
 vn: 1 DocID: 780 Age: 56 
 
+final.query([Dept=4, Age>35], [DocID, Age], [])
 vn: 1 DocID: 1 Age: 98 
 vn: 4 DocID: 4 Age: 36 
 vn: 2 DocID: 4 Age: 36 
@@ -32,10 +36,14 @@ vn: 1 DocID: 555 Age: 76
 vn: 1 DocID: 620 Age: 78 
 vn: 1 DocID: 780 Age: 56 
 
+final.query([age=35], [DocID])
+final.count([Dept], [])
 count_Dept: 18
 
+final.count([Dept])
 count_Dept: 12
 
+final.sort([Age])
 vn: 1 sysid: 21 Age: 28 DocID: 55 Spec1: 76 State: 15 
 vn: 1 sysid: 29 Age: 34 City: 1 DocID: 570 Gender: 2 
 vn: 4 sysid: 19 Age: 36 Dept: 4 DocID: 4 Salary: 181800 
@@ -48,6 +56,7 @@ vn: 1 sysid: 23 Age: 91 DocID: 66 Salary: 130300 Spec1: 41
 vn: 1 sysid: 22 Age: 97 City: 2 Dept: 2 DocID: 666 Gender: 2 Salary: 181800 Spec1: 56 State: 7 
 vn: 1 sysid: 8 Age: 98 Dept: 4 DocID: 1 
 
+final.sort([Age], [3])
 vn: 1 sysid: 21 Age: 28 DocID: 55 Spec1: 76 State: 15 
 vn: 1 sysid: 29 Age: 34 City: 1 DocID: 570 Gender: 2 
 vn: 3 sysid: 14 Age: 35 Dept: 4 DocID: 4 Salary: 185800 
@@ -62,6 +71,7 @@ vn: 1 sysid: 23 Age: 91 DocID: 66 Salary: 130300 Spec1: 41
 vn: 1 sysid: 22 Age: 97 City: 2 Dept: 2 DocID: 666 Gender: 2 Salary: 181800 Spec1: 56 State: 7 
 vn: 1 sysid: 8 Age: 98 Dept: 4 DocID: 1 
 
+final.query([], [sysid, Gender, Salary, City])
 vn: 1 sysid: 8 
 vn: 1 sysid: 12 
 vn: 4 sysid: 19 Salary: 181800 
@@ -88,6 +98,7 @@ vn: 1 sysid: 34 Gender: 2
 vn: 1 sysid: 22 Gender: 2 Salary: 181800 City: 2 
 vn: 1 sysid: 24 
 
+final.query([], [], [])
 vn: 1 sysid: 8 Age: 98 Dept: 4 DocID: 1 
 vn: 1 sysid: 12 DocID: 3 Spec1: 71 State: 10 
 vn: 4 sysid: 19 Age: 36 Dept: 4 DocID: 4 Salary: 181800 
@@ -123,6 +134,7 @@ vn: 1 sysid: 34 Age: 78 DocID: 620 Gender: 2 Spec1: 26
 vn: 1 sysid: 22 Age: 97 City: 2 Dept: 2 DocID: 666 Gender: 2 Salary: 181800 Spec1: 56 State: 7 
 vn: 1 sysid: 24 Age: 56 DocID: 780 
 
+final.query()
 vn: 2 sysid: 3 City: 2 Dept: 6 DocID: 5 Salary: 66200 State: 40 
 vn: 1 sysid: 4 Dept: 4 DocID: 40 Gender: 2 Salary: 84600 Spec1: 46 State: 48 
 vn: 1 sysid: 6 Age: 54 City: 1 DocID: 10 Gender: 1 Salary: 56300 Spec1: 66 

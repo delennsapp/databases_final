@@ -269,12 +269,13 @@ Array *getFieldsArray(char *f)
     return new;
 }
 
-void showFilteredResults(Array *a, Array *f, FILE *results)
+void showFilteredResults(Array *a, Array *f, FILE *results, char *query)
 {
     int i;
     int j;
     char *ch;
     int hasFd = 0;
+    fprintf(results, "%s)\n", query);
     for(i = 0; i < getArraySize(a); i++)
     {
         Document *d = getIndex(a, i);
@@ -325,9 +326,10 @@ void showFilteredResults(Array *a, Array *f, FILE *results)
     return;
 }
 
-void showResults(Array *a, FILE *results)
+void showResults(Array *a, FILE *results, char *query)
 {
     int i;
+    fprintf(results, "%s)\n", query);
     for(i = 0; i < getArraySize(a); i++)
     {
         Document *d = getIndex(a, i);
@@ -341,18 +343,20 @@ void showResults(Array *a, FILE *results)
     return;
 }
 
-void showCount(Array *a, char *f, FILE *results)
+void showCount(Array *a, char *f, FILE *results, char *query)
 {
+    fprintf(results, "%s)\n", query);
     printf("count_%s: %d\n\n",f, getArraySize(a));
     fprintf(results, "count_%s: %d\n\n",f, getArraySize(a));
     return; 
 }
 
-void insert(Database *d, Collection *c, char *l, int stopped)
+void insert(Database *d, Collection *c, char *l, int stopped, FILE *results)
 {
     Document *doc = createDocument(l, getDBSysID(d), stopped);
     incrementSysID(d);
     addDocument(c, doc);
+    fprintf(results, "%s)\n", l);
     return;
 }
 
@@ -364,7 +368,7 @@ void sort(Collection *c, char *l, int s, FILE *results)
     Array *a = filterByField(c, f);
     a = filterVersions(a, c, l, atoi(stopped));
     sortByField(a, f, 0, getArraySize(a) - 1);
-    showResults(a, results);
+    showResults(a, results, l);
     return;
 }
 
@@ -375,7 +379,7 @@ void count(Collection *c, char *l, int s, FILE *results)
     char *stopped = getIndex(field, 1);
     Array *a = filterByField(c, f);
     a = filterVersions(a, c, l, atoi(stopped));
-    showCount(a, f, results);
+    showCount(a, f, results, l);
     return;
 }
 
@@ -401,9 +405,9 @@ void query(Collection *c, char *l, int s, FILE *results)
         sortByVersion(a, getArraySize(a));
     }
     if(strlen(fields) == 0)
-        showResults(a, results);
+        showResults(a, results, l);
     else
-        showFilteredResults(a, getFieldsArray(fields), results);
+        showFilteredResults(a, getFieldsArray(fields), results, l);
     return;
 }
 
@@ -423,7 +427,7 @@ void determineQuery(Database *d, char *l, int s, char *c, char *q, FILE *results
     }
     if(strcmp(q, "insert") == 0)
     {
-        insert(d, coll, l, s);
+        insert(d, coll, l, s, results);
     }
     else if(strcmp(q, "sort") == 0)
     {
