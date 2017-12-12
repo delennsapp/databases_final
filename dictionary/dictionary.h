@@ -11,5 +11,6 @@ void displayDictionary(Dictionary *);
 void displayDictionaryWithFile(Dictionary *, FILE *);
 int containsKey(Dictionary *, char *);
 void *getValue(Dictionary *, char *);
+void freeDictionary(Dictionary *);
 
 #endif

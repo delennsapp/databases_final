@@ -30,6 +30,18 @@ Collection *newCollection(char *n, FILE *f)
     return c;
 }
 
+void freeCollection(Collection *c)
+{
+    Document *current = iterateList(c->documents);
+    while(current != NULL)
+    {
+        freeDocument(current);
+        current = iterateList(c->documents);
+    }
+    free(c);
+    return;
+}
+
 char *getCollectionName(Collection *c)
 {
     return c->name;

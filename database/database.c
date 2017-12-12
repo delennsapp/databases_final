@@ -31,6 +31,18 @@ Database *newDatabase(char *n)
     return d; 
 }
 
+void freeDatabase(Database *d)
+{
+    Collection *current = iterateList(d->collections);
+    while(current != NULL)
+    {
+        freeCollection(current);
+        current = iterateList(d->collections);
+    }
+    free(d);
+    return;
+}
+
 int getDBSysID(Database *d)
 {
     return d->sysid;
@@ -323,6 +335,8 @@ void showFilteredResults(Array *a, Array *f, FILE *results, char *query)
         printf("\n");
         fprintf(results, "\n");
     }
+    freeArray(a);
+    freeArray(f);
     return;
 }
 
@@ -340,6 +354,7 @@ void showResults(Array *a, FILE *results, char *query)
         printf("\n");
         fprintf(results, "\n");
     }
+    freeArray(a);
     return;
 }
 
@@ -348,6 +363,7 @@ void showCount(Array *a, char *f, FILE *results, char *query)
     fprintf(results, "%s)\n", query);
     printf("count_%s: %d\n\n",f, getArraySize(a));
     fprintf(results, "count_%s: %d\n\n",f, getArraySize(a));
+    freeArray(a);
     return; 
 }
 
@@ -369,6 +385,7 @@ void sort(Collection *c, char *l, int s, FILE *results)
     a = filterVersions(a, c, l, atoi(stopped));
     sortByField(a, f, 0, getArraySize(a) - 1);
     showResults(a, results, l);
+    freeArray(field);
     return;
 }
 
@@ -380,6 +397,7 @@ void count(Collection *c, char *l, int s, FILE *results)
     Array *a = filterByField(c, f);
     a = filterVersions(a, c, l, atoi(stopped));
     showCount(a, f, results, l);
+    freeArray(field);
     return;
 }
 

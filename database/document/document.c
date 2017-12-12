@@ -28,6 +28,13 @@ Document *newDocument(int sysid)
     return d;
 }
 
+void freeDocument(Document *d)
+{
+    freeDictionary(d->fields);
+    free(d);
+    return;
+}
+
 int getDocVersion(Document *d)
 {
     return d->version;

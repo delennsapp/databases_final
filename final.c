@@ -54,5 +54,6 @@ int main(void)
     fclose(data);
     fclose(query);
     fclose(results);
+    freeDatabase(db);
     return 0;
 }

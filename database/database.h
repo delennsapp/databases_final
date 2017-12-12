@@ -12,5 +12,6 @@ void addCollection(Database *, Collection *);
 Collection *getCollection(Database *, char *);
 void showCollections(Database *); 
 void doQuery(Database *, char *, FILE *);
+void freeDatabase(Database *);
 
 #endif

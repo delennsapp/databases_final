@@ -15,5 +15,6 @@ void showDocumentWithFile(Document *, FILE *);
 int hasField(Document *, char *);
 int getFieldValue(Document *, char *);
 int isLatest(Document *);
+void freeDocument(Document *);
 
 #endif

@@ -25,6 +25,13 @@ struct kvf
     void *value;
 };
 
+void freeDictionary(Dictionary *d)
+{
+    free(d->array);
+    free(d);
+    return;
+}
+
 Dictionary *newDictionary()
 {
     Dictionary *d = allocate(sizeof(Dictionary));
