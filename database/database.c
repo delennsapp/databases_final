@@ -419,9 +419,9 @@ void query(Collection *c, char *l, int s, FILE *results)
         stopped = getIndex(f, 1);
 
         a = filterVersions(a, c, l, atoi(stopped));
-        sortByField(a,"DocID", 0, getArraySize(a) - 1);
-        sortByVersion(a, getArraySize(a));
     }
+    sortByField(a,"DocID", 0, getArraySize(a) - 1);
+    sortByVersion(a, getArraySize(a));
     if(strlen(fields) == 0)
         showResults(a, results, l);
     else
